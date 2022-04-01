@@ -27,7 +27,9 @@
             coupon.status = '0'
           })
         })
-      } catch (e) {}
+      } catch (e) {
+        console.info(e)
+      }
       _data = obj
     }
   });
@@ -50,7 +52,9 @@
           return Promise.resolve(json)
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.info(e)
+    }
     return Promise.resolve(res)
   }
 })(window.fetch);
