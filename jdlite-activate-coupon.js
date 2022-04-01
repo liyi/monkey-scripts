@@ -10,24 +10,47 @@
 // @run-at       document-start
 // ==/UserScript==
 
-(function () {
-    'use strict';
-  
-    var _data = {}
-  
-    Object.defineProperty(window, '__react_data__', {
-      get: function () {
-        return _data
-      },
-      set: function (obj) {
-        var couponFloorList = obj.activityData.floorList.filter(function (fl) { return fl.template === 'free_coupon' })
+// 修改页面初始数据
+(async function () {
+  'use strict';
+
+  let _data = {}
+
+  Object.defineProperty(window, '__react_data__', {
+    get: function () {
+      return _data
+    },
+    set: function (obj) {
+      if (obj.activityData) {
+        let couponFloorList = obj.activityData.floorList.filter(function (fl) { return fl.template === 'free_coupon' })
         couponFloorList.forEach(function (fl) {
           fl.couponList.forEach(function (coupon) {
             coupon.status = '0'
           })
         })
-        _data = obj
       }
-    })
-  })();
-  
+      _data = obj
+    }
+  });
+})();
+
+// 修改网络动态数据
+(function (fetch) {
+  window.fetch = async function () {
+    const res = await fetch.apply(this, arguments)
+    console.log('fetch', arguments)
+    const json = await res.clone().json()
+    if (json.floorList) {
+      res.json = function () {
+        let couponFloorList = json.floorList.filter(function (fl) { return fl.template === 'free_coupon' })
+        couponFloorList.forEach(function (fl) {
+          fl.couponList.forEach(function (coupon) {
+            coupon.status = '0'
+          })
+        })
+        return Promise.resolve(json)
+      }
+    }
+    return Promise.resolve(res)
+  }
+})(window.fetch);
