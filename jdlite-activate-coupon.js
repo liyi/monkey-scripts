@@ -17,9 +17,9 @@
   let __activity_data__
 
   function patchActivityData (activityData) {
-    let couponFloorList = activityData.floorList.filter(function (fl) { return fl.template === 'free_coupon' })
-    couponFloorList.forEach(function (fl) {
-      fl.couponList.forEach(function (coupon) {
+    let couponFloorList = activityData.floorList.filter(function (floor) { return floor.template === 'free_coupon' })
+    couponFloorList.forEach(function (couponFloor) {
+      couponFloor.couponList.forEach(function (coupon) {
         coupon.status = '0'
       })
     })
@@ -54,9 +54,7 @@
             return Promise.resolve(json)
           }
         }
-      } catch (e) {
-        console.info(e)
-      }
+      } catch (err) {}
       return Promise.resolve(res)
     }
   })(window.fetch)
